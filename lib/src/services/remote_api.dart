@@ -136,7 +136,7 @@ class RemoteApi {
     final response = await get(assembleUri(RemoteApiPath.sight));
     if (response.statusCode == 200) {
       try {
-        final data = jsonDecode(response.body);
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
         return (data as List<dynamic>)
             .map(
               (sight) => (
@@ -166,7 +166,7 @@ class RemoteApi {
     ));
     if (response.statusCode == 200) {
       try {
-        final data = jsonDecode(response.body);
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
         return (
           sightID: data['sight_id'] as int,
           sightName: data['sight_name'] as String,
@@ -190,18 +190,16 @@ class RemoteApi {
   }) async {
     final response = await post(
       assembleUri(RemoteApiPath.copywriting),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(
-        {
-          'name': name,
-          'description': description,
-          'prompt': prompt,
-        },
-      ),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'name': name,
+        'description': description,
+        'prompt': prompt,
+      },
     );
     if (response.statusCode == 202) {
       try {
-        final responseData = jsonDecode(response.body);
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
         return responseData['copywriting_id'] as int?;
       } catch (e) {
         return null;
@@ -218,7 +216,7 @@ class RemoteApi {
     ));
     if (response.statusCode == 200) {
       try {
-        final data = jsonDecode(response.body);
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
         return data['copywriting'] as String?;
       } catch (e) {
         return null;
@@ -284,7 +282,7 @@ class RemoteApi {
     ));
     if (response.statusCode == 200) {
       try {
-        final data = jsonDecode(response.body);
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
         return (
           imageID: data['image_id'] as int,
           sightID: data['sight_id'] as int,
@@ -310,7 +308,7 @@ class RemoteApi {
     final response = await get(assembleUri(RemoteApiPath.record));
     if (response.statusCode == 200) {
       try {
-        final data = jsonDecode(response.body);
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
         return (
           recordID: data['record_id'] as int,
           imageID: data['image_id'] as int,
